@@ -12,6 +12,36 @@ use halo2_proofs::{
     poly::Rotation,
 };
 
+trait NumbericInstructions<F: FieldExt>: Chip<F> {
+    type Num;
+
+    // * Load a number into circuit
+
+    // As a private input
+    fn load_private(&self, layouter: impl Layouter<F>, a: Value<F>) -> Result<Self::Num, Error>;
+
+    // As a fixed constant (fixed column)
+    fn load_constant(&self, layouter: impl Layouter<F>, constant: F) -> Result<Self::Num, Error>;
+
+    // 最简单的乘法门，c = a * b
+    // 可以由`c = a * b`的basic gate组成`a^2 = a * a`
+    fn mul(
+        &self,
+        layouter: impl Layouter<F>,
+        a: Self::Num,
+        b: Self::Num,
+    ) -> Result<Self::Num, Error>;
+
+    // 输出public input
+    // expose a number as a public input to the circuit
+    fn expose_public(
+        &self,
+        layouter: impl Layouter<F>,
+        num: Self::Num,
+        row: usize,
+    ) -> Result<(), Error>;
+}
+
 fn main() {
-    println!("Hello, world! {:?}", );
+    println!("Hello, world! ");
 }
